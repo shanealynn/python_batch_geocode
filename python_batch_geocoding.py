@@ -23,9 +23,12 @@ import requests
 import logging
 import time
 
-logger = logging.getLogger()
+logger = logging.getLogger("root")
 logger.setLevel(logging.DEBUG)
-logger.debug("test")
+# create console handler
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 #------------------ CONFIGURATION -------------------------------
 
@@ -35,7 +38,7 @@ logger.debug("test")
 # With a "Google Maps Geocoding API" key from https://console.developers.google.com/apis/, 
 # the daily limit will be 2500, but at a much faster rate.
 # Example: API_KEY = 'AIzaSyC9azed9tLdjpZNjg2_kVePWvMIBq154eA'
-API_KEY = None
+API_KEY = 'AIzaSyC9azed9tLdjpZNjg2_kVePWvMIBq15DnA'
 
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
 BACKOFF_TIME = 30
@@ -143,8 +146,8 @@ for address in addresses:
         try:
             geocode_result = get_google_results(address, API_KEY)
         except Exception as e:
-            logging.error("Major error with {}".format(address))
-            logging.error("Skipping!")
+            logger.error("Major error with {}".format(address))
+            logger.error("Skipping!")
             geocoded = True
             
         # If we're over the API limit, backoff for a while and try again later.
