@@ -160,7 +160,7 @@ for address in addresses:
             # Note that the results might be empty / non-ok - log this
             if geocode_result['status'] != 'OK':
                 logger.warning("Error geocoding {}: {}".format(address, geocode_result['status']))
-            logger.info("Geocoded: {}: ".format(address, geocode_result['status']))
+            logger.info("Geocoded: {}: {}".format(address, geocode_result['status']))
             results.append(geocode_result)           
             geocoded = True
 
