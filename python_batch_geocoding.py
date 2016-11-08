@@ -48,7 +48,7 @@ input_filename = "data/PPR-2015.csv"
 # Specify the column name in your input data that contains addresses here
 address_column_name = "Address"
 # Return Full Google Results? If True, full JSON results from Google are included in output
-RETURN_FULL_RESULTS = False
+RETURN_FULL_RESULTS = True
 
 #------------------ DATA LOADING --------------------------------
 
@@ -128,7 +128,7 @@ def get_google_results(address, api_key=None, return_full_response=False):
 #------------------ PROCESSING LOOP -----------------------------
 
 # Ensure, before we start, that the API key is ok/valid, and internet access is ok
-test_result = get_google_results("London, England")
+test_result = get_google_results("London, England", API_KEY, RETURN_FULL_RESULTS)
 if (test_result['status'] != 'OK') or (test_result['formatted_address'] != 'London, UK'):
     logger.warning("There was an error when testing the Google Geocoder.")
     raise ConnectionError('Problem with test results from Google Geocode - check your API key and internet connection.')
@@ -136,14 +136,15 @@ if (test_result['status'] != 'OK') or (test_result['formatted_address'] != 'Lond
 # Create a list to hold results
 results = []
 # Go through each address in turn
-for address in addresses:
+for address in addresses[1:50]:
     # While the address geocoding is not finished:
     geocoded = False
     while geocoded is not True:
         # Geocode the address with google
         try:
-            geocode_result = get_google_results(address, API_KEY, return_full_response=RETURN_FULL_RESUlTS)
+            geocode_result = get_google_results(address, API_KEY, return_full_response=RETURN_FULL_RESULTS)
         except Exception as e:
+            logger.exception(e)
             logger.error("Major error with {}".format(address))
             logger.error("Skipping!")
             geocoded = True
