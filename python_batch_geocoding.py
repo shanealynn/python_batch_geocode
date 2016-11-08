@@ -42,13 +42,13 @@ API_KEY = None
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
 BACKOFF_TIME = 30
 # Set your output file name here.
-output_filename = 'data/output.csv'
+output_filename = 'data/output-2015.csv'
 # Set your input file here
 input_filename = "data/PPR-2015.csv"
 # Specify the column name in your input data that contains addresses here
 address_column_name = "Address"
 # Return Full Google Results? If True, full JSON results from Google are included in output
-RETURN_FULL_RESULTS = True
+RETURN_FULL_RESULTS = False
 
 #------------------ DATA LOADING --------------------------------
 
@@ -62,9 +62,10 @@ if address_column_name not in data.columns:
 # Make a big list of all of the addresses to be processed.
 addresses = data[address_column_name].tolist()
 
-# **** IRELAND SPECIFIC! ****
-# We know that these addresses are in Ireland, so add this for accuracy.
-addresses = [address + ', Ireland' for address in addresses]
+# **** DEMO DATA / IRELAND SPECIFIC! ****
+# We know that these addresses are in Ireland, and there's a column for county, so add this for accuracy. 
+# (remove this line / alter for your own dataset)
+addresses = (data[address_column_name] + ',' + data['County'] + ',Ireland').tolist()
 
 
 #------------------	FUNCTION DEFINITIONS ------------------------
@@ -136,7 +137,7 @@ if (test_result['status'] != 'OK') or (test_result['formatted_address'] != 'Lond
 # Create a list to hold results
 results = []
 # Go through each address in turn
-for address in addresses[1:50]:
+for address in addresses:
     # While the address geocoding is not finished:
     geocoded = False
     while geocoded is not True:
@@ -159,7 +160,7 @@ for address in addresses[1:50]:
             # Note that the results might be empty / non-ok - log this
             if geocode_result['status'] != 'OK':
                 logger.warning("Error geocoding {}: {}".format(address, geocode_result['status']))
-            logger.info("Geocoded: {}: {}".format(address, geocode_result['status']))
+            logger.debug("Geocoded: {}: {}".format(address, geocode_result['status']))
             results.append(geocode_result)           
             geocoded = True
 
