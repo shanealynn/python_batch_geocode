@@ -38,19 +38,17 @@ logger.addHandler(ch)
 # With a "Google Maps Geocoding API" key from https://console.developers.google.com/apis/, 
 # the daily limit will be 2500, but at a much faster rate.
 # Example: API_KEY = 'AIzaSyC9azed9tLdjpZNjg2_kVePWvMIBq154eA'
-API_KEY = 'AIzaSyC9azed9tLdjpZNjg2_kVePWvMIBq15DnA'
-
+API_KEY = None
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
 BACKOFF_TIME = 30
-
 # Set your output file name here.
 output_filename = 'data/output.csv'
-
 # Set your input file here
 input_filename = "data/PPR-2015.csv"
 # Specify the column name in your input data that contains addresses here
 address_column_name = "Address"
-
+# Return Full Google Results? If True, full JSON results from Google are included in output
+RETURN_FULL_RESULTS = False
 
 #------------------ DATA LOADING --------------------------------
 
@@ -144,7 +142,7 @@ for address in addresses:
     while geocoded is not True:
         # Geocode the address with google
         try:
-            geocode_result = get_google_results(address, API_KEY)
+            geocode_result = get_google_results(address, API_KEY, return_full_response=RETURN_FULL_RESUlTS)
         except Exception as e:
             logger.error("Major error with {}".format(address))
             logger.error("Skipping!")
